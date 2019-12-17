@@ -5,4 +5,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="benchmarkdotnet" Version="0.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XorShift.Intrinsics\XorShift.Intrinsics.csproj" />
+  </ItemGroup>
+
 </Project>

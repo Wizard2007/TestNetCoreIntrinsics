@@ -21,7 +21,6 @@ namespace XorShift.Intrinsics
                 
                 while (pbuf < pend)
                 {
-                    Console.WriteLine($"{x},{y},{z},{w}");
                     ulong tx = x ^ (x << 11);
                     ulong ty = y ^ (y << 11);
                     ulong tz = z ^ (z << 11);
@@ -30,7 +29,6 @@ namespace XorShift.Intrinsics
                     *(pbuf++) = y = x ^ (x >> 19) ^ (ty ^ (ty >> 8));
                     *(pbuf++) = z = y ^ (y >> 19) ^ (tz ^ (tz >> 8));
                     *(pbuf++) = w = z ^ (z >> 19) ^ (tw ^ (tw >> 8));
-                    Console.WriteLine($"{x},{y},{z},{w}");
                 }
             }
             _x = x; _y = y; _z = z; _w = w;
