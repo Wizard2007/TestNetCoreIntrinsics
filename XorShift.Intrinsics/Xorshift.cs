@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TestApp
+namespace XorShift.Intrinsics
 {
         public abstract class Xorshift : Random
     {

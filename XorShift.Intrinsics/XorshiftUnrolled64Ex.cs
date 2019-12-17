@@ -1,4 +1,7 @@
-namespace TestApp
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+
+namespace XorShift.Intrinsics
 {
     public class XorshiftUnrolled64Ex : Xorshift
     {
@@ -6,24 +9,44 @@ namespace TestApp
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
-            ulong x = _x, y = _y, z = _z, w = _w;
+            var vectorArray = stackalloc ulong[4];
+            var tVectorArray = stackalloc ulong[4];
+            
+            ulong* pX = vectorArray;
+            ulong* pY = vectorArray+1;
+            ulong* pZ = vectorArray+2;
+            ulong* pW = vectorArray+3;
+
+            *(pX) = _x;
+            *(pY) = _y;
+            *(pZ) = _z;
+            *(pW) = _w;
+
+            ulong* pTX = tVectorArray;
+            ulong* pTY = tVectorArray+1;
+            ulong* pTZ = tVectorArray+2;
+            ulong* pTW = tVectorArray+3;
+
             fixed (byte* pbytes = buf)
             {
                 ulong* pbuf = (ulong*) (pbytes + offset);
                 ulong* pend = (ulong*) (pbytes + offsetEnd);
                 while (pbuf < pend)
                 {
-                    ulong tx = x ^ (x << 11);
-                    ulong ty = y ^ (y << 11);
-                    ulong tz = z ^ (z << 11);
-                    ulong tw = w ^ (w << 11);
-                    *(pbuf++) = x = w ^ (w >> 19) ^ (tx ^ (tx >> 8));
-                    *(pbuf++) = y = x ^ (x >> 19) ^ (ty ^ (ty >> 8));
-                    *(pbuf++) = z = y ^ (y >> 19) ^ (tz ^ (tz >> 8));
-                    *(pbuf++) = w = z ^ (z >> 19) ^ (tw ^ (tw >> 8));
+                    var  v = Avx2.LoadVector256(vectorArray);
+                    var shifted = Avx2.ShiftLeftLogical(v, 11);
+                    var tVector = Avx2.Xor(v, shifted);
+                    var tVectorR = Avx2.ShiftRightLogical(tVector, 8);
+                    var tResult = Avx2.Xor(tVector, tVectorR);
+                    Avx2.Store(tVectorArray, tResult);
+
+                    *(pbuf++) = *(pX) = *(pW) ^ (*(pW) >> 19) ^ *(pTX);
+                    *(pbuf++) = *(pY) = *(pX) ^ (*(pX) >> 19) ^ *(pTY);
+                    *(pbuf++) = *(pZ) = *(pY) ^ (*(pY) >> 19) ^ *(pTZ);
+                    *(pbuf++) = *(pW) = *(pZ) ^ (*(pZ) >> 19) ^ *(pTW);
                 }
             }
-            _x = (uint)x; _y = (uint)y; _z = (uint)z; _w = (uint)w;
+            _x = (uint)*(pX); _y = (uint)*(pY); _z = (uint)*(pZ); _w = (uint)*(pW);
         }
     }
 }

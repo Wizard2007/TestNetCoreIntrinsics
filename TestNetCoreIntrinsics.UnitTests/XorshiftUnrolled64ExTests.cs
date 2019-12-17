@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XorShift.Intrinsics;
 
 namespace TestApp.UnitTests
 {
@@ -23,3 +24,4 @@ namespace TestApp.UnitTests
         }
     }
 }
+

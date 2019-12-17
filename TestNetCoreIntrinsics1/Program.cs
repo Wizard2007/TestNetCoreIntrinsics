@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using XorShift.Intrinsics;
 
 namespace TestNetCoreIntrinsics
 {
@@ -8,6 +9,9 @@ namespace TestNetCoreIntrinsics
     {
         unsafe static void Main(string[] args)
         {
+            var t = new XorshiftUnrolled64();
+            var arrayByte = new byte[32];
+            t.NextBytes(arrayByte);
             Console.WriteLine( Avx2.IsSupported ? "Avx2 supported" : "Avx2 : not supported" );
             Console.WriteLine( Sse.IsSupported ? "Sse supported" : "Sse : not supported");
             Console.WriteLine( Sse2.IsSupported ? "Sse2 supported" : "Sse2 : not supported");
