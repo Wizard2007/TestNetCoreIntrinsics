@@ -48,7 +48,7 @@ namespace XorShift.Intrinsics
                     *(pbuf++) = *(pW) = *(pZ) ^ (*(pZ) >> 19) ^ *(pTW);
                 }
             }
-            _x = (uint)*(pX); _y = (uint)*(pY); _z = (uint)*(pZ); _w = (uint)*(pW);
+            _x = *(pX); _y = *(pY); _z = *(pZ); _w = *(pW);
         }
     }
 }
