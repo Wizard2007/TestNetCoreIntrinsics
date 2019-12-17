@@ -10,7 +10,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
         #region Private fields
 
         private byte[] _buffer = new byte[10*1024*1024];
-        private XorshiftUnrolled64 _xorshiftUnrolled64 = new XorshiftUnrolled64();
+        
         private XorshiftUnrolled64Ex _xorshiftUnrolled64Ex = new XorshiftUnrolled64Ex();
 
         #endregion
@@ -19,7 +19,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
 
         [Benchmark]
         public void TestFillBuffer()
-            => _xorshiftUnrolled64.NextBytes(_buffer);
+            => _xorshiftUnrolled64Ex.NextBytes(_buffer);
 
 
         #endregion
