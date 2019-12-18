@@ -23,9 +23,9 @@ namespace XorShift.BenchmarckDotNet.Configs
                     .With(Jit.RyuJit)
                     .With(Platform.X64)
                     .With(CsProjCoreToolchain.NetCoreApp31)
-                    .WithIterationCount(10)
-                    .WithInvocationCount(32)
-                    .WithUnrollFactor(16)
+                    .WithIterationCount(1000)
+                    .WithInvocationCount(1000)
+                    .WithUnrollFactor(2)
                     .WithLaunchCount(1)
                     .WithWarmupCount(0)
             );

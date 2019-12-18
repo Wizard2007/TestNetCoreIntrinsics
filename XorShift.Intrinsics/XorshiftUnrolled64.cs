@@ -14,6 +14,7 @@ namespace XorShift.Intrinsics
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
             ulong x = _x, y = _y, z = _z, w = _w;
+            //Console.WriteLine($"XorshiftUnrolled64 : {buf.Length}");
             fixed (byte* pbytes = buf)
             {
                 ulong* pbuf = (ulong*) (pbytes + offset);

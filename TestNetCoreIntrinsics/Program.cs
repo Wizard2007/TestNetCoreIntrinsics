@@ -9,7 +9,7 @@ namespace TestNetCoreIntrinsics
     {
         unsafe static void Main(string[] args)
         {
-            var arrayByte = new byte[32];
+            var arrayByte = new byte[1024*1024];
             var t1 = new XorshiftUnrolled64Ex();
             t1.NextBytes(arrayByte);
             var t = new XorshiftUnrolled64();
@@ -27,7 +27,33 @@ namespace TestNetCoreIntrinsics
             Console.WriteLine(string.Empty);
             //Vector256Bit();
             Console.WriteLine(string.Empty);
+            Vector256BitEditSource();
             Console.WriteLine("-- Completed ... ");
+        }
+
+        unsafe static void Vector256BitEditSource()
+        {
+            Console.WriteLine("-- Edit 256 Bit vector --");
+
+            var vectroSize256 = 256 / 8 / 4;
+            var utemp256 = stackalloc uint[16];
+            for (int j = 0; j < vectroSize256; j++) {
+                utemp256[j] = 1;
+            }
+
+
+            var v1 = Avx2.LoadVector256(utemp256);
+
+            Console.WriteLine("-- Original vector --");
+            Console.WriteLine(VectroToString(v1, vectroSize256));
+            utemp256[0] = uint.MaxValue;
+            Console.WriteLine("-- After change array --");
+            Console.WriteLine(VectroToString(v1, vectroSize256));
+            var v2 = Avx2.LoadVector256(utemp256);
+            Console.WriteLine("-- After reload vetor --");
+            Console.WriteLine(VectroToString(v2, vectroSize256));
+
+            //Avx2.Shuffle
         }
 
         unsafe static void Vector256Bit()

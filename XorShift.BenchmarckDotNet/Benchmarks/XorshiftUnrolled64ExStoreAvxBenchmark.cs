@@ -5,12 +5,12 @@ using XorShift.Intrinsics;
 namespace XorShift.BenchmarckDotNet.Benchmarks
 {
     [Config(typeof(CommonXorshiftBenchmarkConfig))]
-    public class XorshiftUnrolled64ExBenchmark : XorshiftCommonBenchmark
+    public class XorshiftUnrolled64ExStoreAvxBenchmark : XorshiftCommonBenchmark
     {
         #region Private fields
 
         
-        private XorshiftUnrolled64Ex _xorshiftUnrolled64Ex = new XorshiftUnrolled64Ex();
+        private XorshiftUnrolled64ExStoreAvx _xorshiftUnrolled64ExStoreAvx = new XorshiftUnrolled64ExStoreAvx();
 
         #endregion
 
@@ -18,7 +18,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
 
         [Benchmark]
         public void TestFillBuffer()
-            => _xorshiftUnrolled64Ex.NextBytes(_buffer);
+            => _xorshiftUnrolled64ExStoreAvx.NextBytes(_buffer);
 
         #endregion
     }

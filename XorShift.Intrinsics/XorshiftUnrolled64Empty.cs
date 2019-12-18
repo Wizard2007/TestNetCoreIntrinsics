@@ -1,16 +1,17 @@
+using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64Ex : Xorshift
+    public class XorshiftUnrolled64Empty : Xorshift
     {
         public override int FillBufferMultipleRequired => 32;
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
-            var vectorArray = stackalloc uint[8];
-            var tVectorArray = stackalloc uint[8];
+            var vectorArray = stackalloc uint[4];
+            var tVectorArray = stackalloc uint[4];
 
             uint* pX = vectorArray;
             uint* pY = vectorArray+1;
@@ -27,6 +28,7 @@ namespace XorShift.Intrinsics
             uint* pTZ = tVectorArray+2;
             uint* pTW = tVectorArray+3;
 
+            //Console.WriteLine($"XorshiftUnrolled64Ex : {buf.Length}");
             fixed (byte* pbytes = buf)
             {
                 var pbuf = (uint*) (pbytes + offset);
@@ -34,19 +36,7 @@ namespace XorShift.Intrinsics
 
                 while (pbuf < pend)
                 {
-                    var  v = Avx2.LoadVector256(vectorArray);
-
-                    var tXYXW = Avx2.Xor(v, Avx2.ShiftLeftLogical(v, 11));
-
-                    var tXYZWShifted = Avx2.ShiftRightLogical(tXYXW, 8);
-
-                    Avx2.Store(tVectorArray, Avx2.Xor(tXYXW, tXYZWShifted));
-
-                    //*(pbuf++) = *(pX) = *(pW) ^ (*(pW) >> 19) ^ *(pTX);
-                    //*(pbuf++) = *(pY) = *(pX) ^ (*(pX) >> 19) ^ *(pTY);
-                    //*(pbuf++) = *(pZ) = *(pY) ^ (*(pY) >> 19) ^ *(pTZ);
-                    //*(pbuf++) = *(pW) = *(pZ) ^ (*(pZ) >> 19) ^ *(pTW);
-                    pbuf += 4;
+                    pbuf += 16;
                 }
             }
             _x = *(pX); _y = *(pY); _z = *(pZ); _w = *(pW);
