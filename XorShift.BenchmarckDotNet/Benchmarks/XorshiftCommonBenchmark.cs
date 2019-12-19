@@ -4,7 +4,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
     {
         #region Private fields
 
-        protected byte[] _buffer = new byte[1024*1024];
+        protected byte[] _buffer = new byte[10*1024*1024];
 
         #endregion
     }

@@ -6,33 +6,37 @@ namespace XorShift.Intrinsics
 {
     public class XorshiftUnrolled64ExUnroled : Xorshift
     {
+        private new ulong _x = 123456789;
+        private new ulong _y = 362436069;
+        private new ulong _z = 521288629;
+        private new ulong _w = 88675123;
         public override int FillBufferMultipleRequired => 32;
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
-            var vectorArray = stackalloc uint[8];
-            var tVectorArray = stackalloc uint[8];
+            var vectorArray = stackalloc ulong[8];
+            var tVectorArray = stackalloc ulong[8];
 
-            uint* pX = vectorArray;
-            uint* pY = vectorArray+1;
-            uint* pZ = vectorArray+2;
-            uint* pW = vectorArray+3;
+            ulong* pX = vectorArray;
+            ulong* pY = vectorArray+1;
+            ulong* pZ = vectorArray+2;
+            ulong* pW = vectorArray+3;
 
             *(pX) = _x;
             *(pY) = _y;
             *(pZ) = _z;
             *(pW) = _w;
 
-            uint* pTX = tVectorArray;
-            uint* pTY = tVectorArray+1;
-            uint* pTZ = tVectorArray+2;
-            uint* pTW = tVectorArray+3;
+            ulong* pTX = tVectorArray;
+            ulong* pTY = tVectorArray+1;
+            ulong* pTZ = tVectorArray+2;
+            ulong* pTW = tVectorArray+3;
 
             //Console.WriteLine($"XorshiftUnrolled64Ex : {buf.Length}");
             fixed (byte* pbytes = buf)
             {
-                var pbuf = (uint*) (pbytes + offset);
-                var pend = (uint*) (pbytes + offsetEnd);
+                var pbuf = (ulong*) (pbytes + offset);
+                var pend = (ulong*) (pbytes + offsetEnd);
 
                 while (pbuf < pend)
                 {
@@ -100,7 +104,7 @@ namespace XorShift.Intrinsics
                     var tXYXW23 = Avx2.ShiftRightLogical(v3, 19);
                     var tXYXW33 = Avx2.Xor(tXYXW23, tXYXW13);
                     Avx2.Store(tVectorArray, tXYXW33);
-                    pbuf += 32;
+                    pbuf += 16;
                 }
             }
             _x = *(pX); _y = *(pY); _z = *(pZ); _w = *(pW);

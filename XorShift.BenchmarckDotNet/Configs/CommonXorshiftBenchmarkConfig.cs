@@ -17,15 +17,16 @@ namespace XorShift.BenchmarckDotNet.Configs
             UnionRule = ConfigUnionRule.Union;            
             Options = this.Options | ConfigOptions.JoinSummary;
             SummaryStyle = SummaryStyle.Default.WithMaxParameterColumnWidth(50);
+
             Add(
                 Job.Default
                     .With(RunStrategy.Monitoring)
                     .With(Jit.RyuJit)
                     .With(Platform.X64)
                     .With(CsProjCoreToolchain.NetCoreApp31)
-                    .WithIterationCount(1000)
-                    .WithInvocationCount(1000)
-                    .WithUnrollFactor(2)
+                    .WithIterationCount(10)
+                    .WithInvocationCount(10240)
+                    .WithUnrollFactor(16)
                     .WithLaunchCount(1)
                     .WithWarmupCount(0)
             );
