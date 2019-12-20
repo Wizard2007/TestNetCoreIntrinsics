@@ -10,7 +10,7 @@ namespace TestNetCoreIntrinsics
         unsafe static void Main(string[] args)
         {
             var arrayByte = new byte[1024*1024];
-            var t1 = new XorshiftUnrolled64Ex();
+            var t1 = new XorshiftUnrolled64Intrinsics();
             t1.NextBytes(arrayByte);
             var t = new XorshiftUnrolled64();
             

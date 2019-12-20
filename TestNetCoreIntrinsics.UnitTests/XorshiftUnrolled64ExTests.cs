@@ -14,7 +14,7 @@ namespace TestApp.UnitTests
             var samples = new byte[1024];
             sample.NextBytes(samples);
 
-            var tested = new XorshiftUnrolled64Ex();
+            var tested = new XorshiftUnrolled64Intrinsics();
 
             //Act
             var results = new byte[1024];

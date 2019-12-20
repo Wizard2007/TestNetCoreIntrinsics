@@ -10,7 +10,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
         #region Private fields
 
         
-        private XorshiftUnrolled64ExUnroled _xorshiftUnrolled64ExUnroled = new XorshiftUnrolled64ExUnroled();
+        private XorshiftUnrolled64IntrinsicsUnroled _xorshiftUnrolled64ExUnroled = new XorshiftUnrolled64IntrinsicsUnroled();
 
         #endregion
 

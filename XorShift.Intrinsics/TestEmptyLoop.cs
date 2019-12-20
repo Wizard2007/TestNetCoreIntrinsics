@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64Empty : Xorshift
+    public class TestEmptyLoop : Xorshift
     {
         public override int FillBufferMultipleRequired => 32;
 

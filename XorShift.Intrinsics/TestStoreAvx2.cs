@@ -3,7 +3,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64ExStoreAvx2 : Xorshift
+    public class TestStoreAvx2 : Xorshift
     {
         private new ulong _x = 123456789;
         private new ulong _y = 362436069;

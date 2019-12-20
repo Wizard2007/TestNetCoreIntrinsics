@@ -4,35 +4,34 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64ExUnroled : Xorshift
+    public class TestXorshiftUnrolled64IntrinsicsUnroled : Xorshift
     {
         private new ulong _x = 123456789;
         private new ulong _y = 362436069;
         private new ulong _z = 521288629;
         private new ulong _w = 88675123;
-        public override int FillBufferMultipleRequired => 32;
+        public override int FillBufferMultipleRequired => 128;
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
-            var vectorArray = stackalloc ulong[8];
-            var tVectorArray = stackalloc ulong[8];
+            var xyzwArray = stackalloc ulong[16];
+            var txyzwArray = stackalloc ulong[16];
 
-            ulong* pX = vectorArray;
-            ulong* pY = vectorArray+1;
-            ulong* pZ = vectorArray+2;
-            ulong* pW = vectorArray+3;
+            ulong* pX = xyzwArray;
+            ulong* pY = xyzwArray+4;
+            ulong* pZ = xyzwArray+8;
+            ulong* pW = xyzwArray+12;
 
             *(pX) = _x;
             *(pY) = _y;
             *(pZ) = _z;
             *(pW) = _w;
 
-            ulong* pTX = tVectorArray;
-            ulong* pTY = tVectorArray+1;
-            ulong* pTZ = tVectorArray+2;
-            ulong* pTW = tVectorArray+3;
+            ulong* pTX = txyzwArray;
+            ulong* pTY = txyzwArray+4;
+            ulong* pTZ = txyzwArray+8;
+            ulong* pTW = txyzwArray+12;
 
-            //Console.WriteLine($"XorshiftUnrolled64Ex : {buf.Length}");
             fixed (byte* pbytes = buf)
             {
                 var pbuf = (ulong*) (pbytes + offset);
@@ -40,27 +39,23 @@ namespace XorShift.Intrinsics
 
                 while (pbuf < pend)
                 {
-                    var  v = Avx2.LoadVector256(vectorArray);
-
+                    // 1 -----------------------------------------------------------------------
+                    //ulong tx = x ^ (x << 11);
+                    var v = Avx2.LoadVector256(xyzwArray+12);
                     var tXYXW = Avx2.Xor(v, Avx2.ShiftLeftLogical(v, 11));
 
+                    //*(pbuf++) = x = w ^ (w >> 19) ^ (tx ^ (tx >> 8));
                     var tXYZWShifted = Avx2.ShiftRightLogical(tXYXW, 8);
-
                     var t =  Avx2.Xor(tXYXW, tXYZWShifted);
-
-                    //Avx2.Store(tVectorArray, t);
-
-                    //*(pbuf++) = *(pX) = *(pW) ^ (*(pW) >> 19) ^ *(pTX);
                     var tXYXW1 = Avx2.Xor(v, t);
                     var tXYXW2 = Avx2.ShiftRightLogical(v, 19);
                     var tXYXW3 = Avx2.Xor(tXYXW2, tXYXW1);
-                    Avx2.Store(tVectorArray, tXYXW3);
+                    Avx2.Store(pbuf, tXYXW3);
+                    Avx2.Store(xyzwArray, tXYXW3);
 
-                    //*(pbuf++) = *(pY) = *(pX) ^ (*(pX) >> 19) ^ *(pTY);
-                    //*(pbuf++) = *(pZ) = *(pY) ^ (*(pY) >> 19) ^ *(pTZ);
-                    //*(pbuf++) = *(pW) = *(pZ) ^ (*(pZ) >> 19) ^ *(pTW);
-                    
-                    var  v1 = Avx2.LoadVector256(vectorArray);
+                    pbuf += 4;
+                    // 2 -----------------------------------------------------------------------
+                    var v1 = Avx2.LoadVector256(xyzwArray);
 
                     var tXYXW_1 = Avx2.Xor(v, Avx2.ShiftLeftLogical(v1, 11));
 
@@ -72,11 +67,12 @@ namespace XorShift.Intrinsics
                     var tXYXW11 = Avx2.Xor(v1, t);
                     var tXYXW21 = Avx2.ShiftRightLogical(v1, 19);
                     var tXYXW31 = Avx2.Xor(tXYXW21, tXYXW11);
-                    Avx2.Store(tVectorArray, tXYXW31);
+                    Avx2.Store(pbuf, tXYXW31);
+                    Avx2.Store(xyzwArray + 4, tXYXW3);
+                    pbuf += 4;
+                    // 3 -----------------------------------------------------------------------
                     
-                    //----------------------
-                    
-                    var  v2 = Avx2.LoadVector256(vectorArray);
+                    var  v2 = Avx2.LoadVector256(xyzwArray+4);
 
                     var tXYXW_2 = Avx2.Xor(v2, Avx2.ShiftLeftLogical(v2, 11));
 
@@ -88,26 +84,30 @@ namespace XorShift.Intrinsics
                     var tXYXW12 = Avx2.Xor(v2, t);
                     var tXYXW22 = Avx2.ShiftRightLogical(v2, 19);
                     var tXYXW32 = Avx2.Xor(tXYXW22, tXYXW12);
-                    Avx2.Store(tVectorArray, tXYXW32);
+                    Avx2.Store(pbuf, tXYXW32);
+                    Avx2.Store(xyzwArray+8, tXYXW3);
                     
-                    //----------------------
-                    var  v3 = Avx2.LoadVector256(vectorArray);
+                    pbuf += 4;
+                    // 4 -----------------------------------------------------------------------
+                    var  v3 = Avx2.LoadVector256(xyzwArray+8);
 
                     var tXYXW_3 = Avx2.Xor(v3, Avx2.ShiftLeftLogical(v3, 11));
 
                     var tXYZWShifted3 = Avx2.ShiftRightLogical(tXYXW_3, 8);
 
                     var t3 =  Avx2.Xor(tXYXW_3, tXYZWShifted3);
-
                     
                     var tXYXW13 = Avx2.Xor(v3, t);
                     var tXYXW23 = Avx2.ShiftRightLogical(v3, 19);
                     var tXYXW33 = Avx2.Xor(tXYXW23, tXYXW13);
-                    Avx2.Store(tVectorArray, tXYXW33);
-                    pbuf += 16;
+                    Avx2.Store(pbuf, tXYXW33);
+                    Avx2.Store(xyzwArray+12, tXYXW3);
+
+                    pbuf += 4;
                 }
             }
             _x = *(pX); _y = *(pY); _z = *(pZ); _w = *(pW);
         }
+    
     }
 }
