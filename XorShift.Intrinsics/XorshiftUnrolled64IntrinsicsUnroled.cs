@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using A = System.Runtime.Intrinsics.X86.A;
+//using A = System.Runtime.Intrinsics.X86.Avx2;
 
 namespace XorShift.Intrinsics
 {
@@ -20,7 +20,13 @@ namespace XorShift.Intrinsics
 
         #endregion
 
-
+        public XorshiftUnrolled64IntrinsicsUnroled()
+        {
+            xyzwArray[0] = _x;
+            xyzwArray[1] = _x;
+            xyzwArray[2] = _x;
+            xyzwArray[3] = _x;
+        }
 
 /*
 delegate string StringToString (string s);
@@ -60,83 +66,75 @@ static void Main()
                 {
                     var pbuf = (ulong*) (pbytes + offset);
                     var pend = (ulong*) (pbytes + offsetEnd);
-                    var x = A.LoadVector256(pxyzwArray);
-                    var y = A.LoadVector256(pxyzwArray+4);
-                    var z = A.LoadVector256(pxyzwArray+8);
-                    var w = A.LoadVector256(pxyzwArray+12);
+                    var x = Avx2.LoadVector256(pxyzwArray);
+                    var y = Avx2.LoadVector256(pxyzwArray+4);
+                    var z = Avx2.LoadVector256(pxyzwArray+8);
+                    var w = Avx2.LoadVector256(pxyzwArray+12);
                     while (pbuf < pend)
                     {
                         // 1 -----------------------------------------------------------------------
                         //ulong tx = x ^ (x << 11);
-                        var tx = A.Xor(x, A.ShiftLeftLogical(x, 11));
+                        var tx = Avx2.Xor(x, Avx2.ShiftLeftLogical(x, 11));
 
                         //*(pbuf++) = x = w ^ (w >> 19) ^ (tx ^ (tx >> 8));
-                        var ttx =  A.Xor(tx, A.ShiftRightLogical(tx, 8));
+                        var ttx =  Avx2.Xor(tx, Avx2.ShiftRightLogical(tx, 8));
 
-                        x = A.Xor(
-                                A.Xor(w, ttx),
-                                A.ShiftRightLogical(w, 19)
+                        x = Avx2.Xor(
+                                Avx2.Xor(w, ttx),
+                                Avx2.ShiftRightLogical(w, 19)
                             );
 
-                        x = A.Xor(
-                                A.Xor(
-                                    w, A.ShiftRightLogical(w, 19)
-                                ),
-                                ttx
-                            );
-                        A.Store(pbuf, x);
-                        
-
+                        // save results
+                        Avx2.Store(pbuf, x);
                         pbuf += 4;
+
                         // 2 -----------------------------------------------------------------------
-                        var v1 = A.LoadVector256(pxyzwArray);
 
-                        var tXYXW_1 = A.Xor(tx, A.ShiftLeftLogical(v1, 11));
+                        //ulong ty = y ^ (y << 11);
+                        var ty = Avx2.Xor(y, Avx2.ShiftLeftLogical(y, 11));
 
-                        var tXYZWShifted1 = A.ShiftRightLogical(tXYXW_1, 8);
+                        //*(pbuf++) = y = x ^ (x >> 19) ^ (ty ^ (ty >> 8));
+                        var tty =  Avx2.Xor(ty, Avx2.ShiftRightLogical(ty, 8));
 
-                        var t1 =  A.Xor(tXYXW_1, tXYZWShifted1);
-
-                        
-                        var tXYXW11 = A.Xor(v1, ttx);
-                        var tXYXW21 = A.ShiftRightLogical(v1, 19);
-                        var tXYXW31 = A.Xor(tXYXW21, tXYXW11);
-                        A.Store(pbuf, tXYXW31);
-                        A.Store(pxyzwArray + 4, tXYXW31);
+                        y = Avx2.Xor(
+                                Avx2.Xor(x, tty),
+                                Avx2.ShiftRightLogical(x, 19)
+                            );
+                            
+                        // save results
+                        Avx2.Store(pbuf, y);
                         pbuf += 4;
+
                         // 3 -----------------------------------------------------------------------
-                        
-                        var  v2 = A.LoadVector256(pxyzwArray+4);
+                        //ulong tz = z ^ (z << 11);
+                        var tz = Avx2.Xor(z, Avx2.ShiftLeftLogical(z, 11));
 
-                        var tXYXW_2 = A.Xor(v2, A.ShiftLeftLogical(v2, 11));
+                        //*(pbuf++) = z = y ^ (y >> 19) ^ (tz ^ (tz >> 8));
+                        var ttz =  Avx2.Xor(tz, Avx2.ShiftRightLogical(tz, 8));
 
-                        var tXYZWShifted2 = A.ShiftRightLogical(tXYXW_2, 8);
-
-                        var t2 =  A.Xor(tXYXW_2, tXYZWShifted2);
-
-                        
-                        var tXYXW12 = A.Xor(v2, ttx);
-                        var tXYXW22 = A.ShiftRightLogical(v2, 19);
-                        var tXYXW32 = A.Xor(tXYXW22, tXYXW12);
-                        A.Store(pbuf, tXYXW32);
-                        A.Store(pxyzwArray+8, tXYXW3);
-                        
+                        z = Avx2.Xor(
+                                Avx2.Xor(y, ttz),
+                                Avx2.ShiftRightLogical(y, 19)
+                            );
+                            
+                        // save results
+                        Avx2.Store(pbuf, z);
                         pbuf += 4;
+
                         // 4 -----------------------------------------------------------------------
-                        var  v3 = A.LoadVector256(pxyzwArray+8);
+                        //ulong tw = w ^ (w << 11);
+                        var tw = Avx2.Xor(w, Avx2.ShiftLeftLogical(w, 11));
 
-                        var tXYXW_3 = A.Xor(v3, A.ShiftLeftLogical(v3, 11));
+                        //*(pbuf++) = w = z ^ (z >> 19) ^ (tw ^ (tw >> 8));
+                        var ttw =  Avx2.Xor(tz, Avx2.ShiftRightLogical(tz, 8));
 
-                        var tXYZWShifted3 = A.ShiftRightLogical(tXYXW_3, 8);
-
-                        var t3 =  A.Xor(tXYXW_3, tXYZWShifted3);
-                        
-                        var tXYXW13 = A.Xor(v3, ttx);
-                        var tXYXW23 = A.ShiftRightLogical(v3, 19);
-                        var tXYXW33 = A.Xor(tXYXW23, tXYXW13);
-                        A.Store(pbuf, tXYXW33);
-                        A.Store(pxyzwArray+12, tXYXW3);
-
+                        w = Avx2.Xor(
+                                Avx2.Xor(z, ttw),
+                                Avx2.ShiftRightLogical(z, 19)
+                            );
+                            
+                        // save results
+                        Avx2.Store(pbuf, w);
                         pbuf += 4;
                     }
                 }
