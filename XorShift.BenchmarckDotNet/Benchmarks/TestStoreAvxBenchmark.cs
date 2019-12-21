@@ -5,7 +5,7 @@ using XorShift.Intrinsics;
 namespace XorShift.BenchmarckDotNet.Benchmarks
 {
     [Config(typeof(CommonXorshiftBenchmarkConfig))]
-    public class XorshiftUnrolled64Benchmark : XorshiftCommonBenchmark<XorshiftUnrolled64>
+    public class TestStoreAvxBenchmark : XorshiftCommonBenchmark<TestStoreAvx>
     {
     }
 }

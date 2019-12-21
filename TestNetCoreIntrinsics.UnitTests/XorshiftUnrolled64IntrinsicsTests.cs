@@ -3,8 +3,8 @@ using XorShift.Intrinsics;
 
 namespace TestApp.UnitTests
 {
-    [TestClass]
-    public class XorshiftUnrolled64ExTests
+    //[TestClass]
+    public class XorshiftUnrolled64IntrinsicsTests
     {
         [TestMethod]
         public void GenerateNextBytes()

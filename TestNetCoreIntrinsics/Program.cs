@@ -10,11 +10,12 @@ namespace TestNetCoreIntrinsics
         unsafe static void Main(string[] args)
         {
             var arrayByte = new byte[1024*1024];
-            var t1 = new XorshiftUnrolled64Intrinsics();
+            var t1 = new XorshiftUnrolled64IntrinsicsSse2Unroled();
             t1.NextBytes(arrayByte);
             var t = new XorshiftUnrolled64();
-            
+            arrayByte = new byte[1024*1024];          
             t.NextBytes(arrayByte);
+
             Console.WriteLine( Avx2.IsSupported ? "Avx2 supported" : "Avx2 : not supported" );
             Console.WriteLine( Sse.IsSupported ? "Sse supported" : "Sse : not supported");
             Console.WriteLine( Sse2.IsSupported ? "Sse2 supported" : "Sse2 : not supported");
@@ -143,7 +144,7 @@ namespace TestNetCoreIntrinsics
             return line;
         }
 
-                unsafe static string VectroToString(Vector256<int> vector, int vectorSize) 
+        unsafe static string VectroToString(Vector256<int> vector, int vectorSize) 
         {
             var line = string.Empty;
 

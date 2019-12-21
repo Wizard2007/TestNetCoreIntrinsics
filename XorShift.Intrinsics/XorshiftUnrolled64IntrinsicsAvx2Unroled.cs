@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64IntrinsicsUnroled : Xorshift
+    public class XorshiftUnrolled64IntrinsicsAvx2Unroled : Xorshift
     {
         #region Private fields
 
@@ -16,16 +16,14 @@ namespace XorShift.Intrinsics
 
         private ulong[] xyzwArray = new ulong[16];
 
-        private ulong[] txyzwArray = new ulong[16];
-
         #endregion
 
-        public XorshiftUnrolled64IntrinsicsUnroled()
+        public XorshiftUnrolled64IntrinsicsAvx2Unroled()
         {
-            xyzwArray[0] = _x;
-            xyzwArray[1] = _x;
-            xyzwArray[2] = _x;
-            xyzwArray[3] = _x;
+            xyzwArray[ 0] = xyzwArray[ 1] = xyzwArray[ 2] = xyzwArray[ 3] = _x;
+            xyzwArray[ 4] = xyzwArray[ 5] = xyzwArray[ 6] = xyzwArray[ 7] = _y;
+            xyzwArray[ 8] = xyzwArray[ 9] = xyzwArray[10] = xyzwArray[11] = _z;
+            xyzwArray[12] = xyzwArray[13] = xyzwArray[14] = xyzwArray[15] = _w;            
         }
 
 /*
@@ -44,32 +42,22 @@ static void Main()
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
-
-            fixed(ulong* pxyzwArray = xyzwArray, ptxyzwArray = txyzwArray)
+            fixed(ulong* pxyzwArray = xyzwArray)
             {
-                ulong* pX = pxyzwArray;
-                ulong* pY = pxyzwArray+4;
-                ulong* pZ = pxyzwArray+8;
-                ulong* pW = pxyzwArray+12;
-
-                *(pX) = _x;
-                *(pY) = _y;
-                *(pZ) = _z;
-                *(pW) = _w;
-
-                ulong* pTX = ptxyzwArray;
-                ulong* pTY = ptxyzwArray+4;
-                ulong* pTZ = ptxyzwArray+8;
-                ulong* pTW = ptxyzwArray+12;
+                var pX = pxyzwArray;
+                var pY = pxyzwArray+4;
+                var pZ = pxyzwArray+8;
+                var pW = pxyzwArray+12;
+                var x = Avx2.LoadVector256(pX);
+                var y = Avx2.LoadVector256(pY);
+                var z = Avx2.LoadVector256(pZ);
+                var w = Avx2.LoadVector256(pW);
 
                 fixed (byte* pbytes = buf)
                 {
                     var pbuf = (ulong*) (pbytes + offset);
                     var pend = (ulong*) (pbytes + offsetEnd);
-                    var x = Avx2.LoadVector256(pxyzwArray);
-                    var y = Avx2.LoadVector256(pxyzwArray+4);
-                    var z = Avx2.LoadVector256(pxyzwArray+8);
-                    var w = Avx2.LoadVector256(pxyzwArray+12);
+
                     while (pbuf < pend)
                     {
                         // 1 -----------------------------------------------------------------------
@@ -137,9 +125,12 @@ static void Main()
                         Avx2.Store(pbuf, w);
                         pbuf += 4;
                     }
+                    
+                    Avx2.Store(pX, x);
+                    Avx2.Store(pY, y);
+                    Avx2.Store(pZ, z);
+                    Avx2.Store(pW, w);
                 }
-                
-                _x = *(pX); _y = *(pY); _z = *(pZ); _w = *(pW);
             }
         }
     }
