@@ -2,9 +2,9 @@ using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
-namespace XorShift.Intrinsics
+namespace XorShift.Intrinsics.Store.Sse
 {
-    public class XorshiftUnrolled64IntrinsicsSse3Unroled : Xorshift
+    public class Sse3UnroledStoreStackAllocBuf : Xorshift
     {
         #region Private fields
 
@@ -17,7 +17,7 @@ namespace XorShift.Intrinsics
 
         #endregion
 
-        public XorshiftUnrolled64IntrinsicsSse3Unroled()
+        public Sse3UnroledStoreStackAllocBuf()
         {
             xyzwArray[0] = xyzwArray[1] = _x;
             xyzwArray[2] = xyzwArray[3] = _y;
@@ -40,6 +40,8 @@ static void Main()
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
         {
+            var tmp = stackalloc ulong[buf.Length/8]; 
+
             fixed(ulong* pxyzwArray = xyzwArray)
             {
                 var pX = pxyzwArray;
@@ -50,14 +52,17 @@ static void Main()
                 var y = Sse3.LoadVector128(pY);
                 var z = Sse3.LoadVector128(pZ);
                 var w = Sse3.LoadVector128(pW);
-                
+                var ptmp = tmp;
+                var ptmp2 = tmp+2;
+                var ptmp4 = tmp+4;
+                var ptmp6 = tmp+6;
                 fixed (byte* pbytes = buf)
                 {
                     var pbuf = (ulong*) (pbytes + offset);
                     var pend = (ulong*) (pbytes + offsetEnd);
 
                     while (pbuf < pend)
-                    {
+                    {/*
                         // 1 -----------------------------------------------------------------------
                         //ulong tx = x ^ (x << 11);
                         var tx = Sse3.Xor(x, Sse3.ShiftLeftLogical(x, 11));
@@ -71,12 +76,12 @@ static void Main()
                             );
 
                         // save results
-                        
-                        Sse3.Store(pbuf, x);
-                        pbuf += 2;
+                        */
 
+                        Sse3.Store(ptmp, x);
+                        ptmp += 2;
                         // 2 -----------------------------------------------------------------------
-                        
+                        /*
                         //ulong ty = y ^ (y << 11);
                         var ty = Sse3.Xor(y, Sse3.ShiftLeftLogical(y, 11));
 
@@ -89,10 +94,10 @@ static void Main()
                             );
                             
                         // save results
-                        
-                        Sse3.Store(pbuf, y);
-                        pbuf += 2;
-                        
+                        */
+                        Sse3.Store(ptmp, y);
+                        ptmp += 2;
+                        /*
                         // 3 -----------------------------------------------------------------------
                         //ulong tz = z ^ (z << 11);
                         var tz = Sse3.Xor(z, Sse3.ShiftLeftLogical(z, 11));
@@ -106,10 +111,11 @@ static void Main()
                             );
                             
                         // save results
-                        
-                        Sse3.Store(pbuf, z);
-                        pbuf += 2;
-                        
+                        */
+
+                        Sse3.Store(ptmp, z);
+                        ptmp += 2;
+                        /*
                         // 4 -----------------------------------------------------------------------
                         //ulong tw = w ^ (w << 11);
                         var tw = Sse3.Xor(w, Sse3.ShiftLeftLogical(w, 11));
@@ -123,9 +129,12 @@ static void Main()
                             );
                             
                         // save results
-                        
-                        Sse3.Store(pbuf, w);
-                        pbuf += 2;
+                        */
+
+                        Sse3.Store(ptmp, w);
+                        ptmp += 2;
+                        //Buffer.MemoryCopy(tmp, pbuf, 64, 64);
+                        pbuf += 8;
                     }
                     
                     Sse3.Store(pX, x);

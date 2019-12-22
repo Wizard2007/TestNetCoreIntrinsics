@@ -2,10 +2,10 @@ using BenchmarkDotNet.Attributes;
 using XorShift.BenchmarckDotNet.Configs;
 using XorShift.Intrinsics;
 
-namespace XorShift.BenchmarckDotNet.Benchmarks
+namespace XorShift.BenchmarckDotNet.Benchmarks.Common
 {
     [Config(typeof(CommonXorshiftBenchmarkConfig))]
-    public class XorshiftUnrolled64IntrinsicsBenchmark : XorshiftCommonBenchmark<XorshiftUnrolled64Intrinsics>
+    public class TestEmptyLoopBenchmark : XorshiftCommonBenchmark<TestEmptyLoop>
     {
     }
 }

@@ -10,25 +10,29 @@ namespace TestApp.UnitTests
         [TestMethod]
         public void GenerateNextBytes()
         {
-            //Arrange
-            var sample = new XorshiftUnrolled64();
-            var samples = new byte[256];
-            sample.NextBytes(samples);
-
-            var tested = new XorshiftUnrolled64IntrinsicsAvx2Unroled();
-
-            //Act
-            var results = new byte[1024];
-            tested.NextBytes(results);
-            //Assert
-            for(int i = 0; i< samples.Length; i+=8)
+            if(System.Runtime.Intrinsics.X86.Avx2.IsSupported)
             {
-                
-                for(int k = 0; k< 2;k++)
+                //Arrange
+                var sample = new XorshiftUnrolled64();
+                var samples = new byte[256];
+                sample.NextBytes(samples);
+                sample.NextBytes(samples);
+                var tested = new XorshiftUnrolled64IntrinsicsAvx2Unroled();
+
+                //Act
+                var results = new byte[1024];
+                tested.NextBytes(results);
+                tested.NextBytes(results);
+                //Assert
+                for(int i = 0; i< samples.Length; i+=8)
                 {
-                    for(int j = 0; j<8; j++)
+                    
+                    for(int k = 0; k< 2;k++)
                     {
-                        Assert.AreEqual(samples[i+j], results[i*2+k*8+j]);
+                        for(int j = 0; j<8; j++)
+                        {
+                            Assert.AreEqual(samples[i+j], results[i*2+k*8+j]);
+                        }
                     }
                 }
             }

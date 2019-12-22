@@ -14,11 +14,12 @@ namespace TestApp.UnitTests
             var sample = new XorshiftUnrolled64();
             var samples = new byte[512];
             sample.NextBytes(samples);
-
+            sample.NextBytes(samples);
             var tested = new XorshiftUnrolled64IntrinsicsSse2Unroled();
 
             //Act
             var results = new byte[1024];
+            tested.NextBytes(results);
             tested.NextBytes(results);
             //Assert
             for(int i = 0; i< samples.Length; i+=8)
