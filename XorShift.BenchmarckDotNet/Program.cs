@@ -1,13 +1,7 @@
 ﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 using XorShift.BenchmarckDotNet.Benchmarks;
-using XorShift.BenchmarckDotNet.Benchmarks.Avx;
-using XorShift.BenchmarckDotNet.Benchmarks.Common;
-using XorShift.BenchmarckDotNet.Benchmarks.Sse;
-using XorShift.BenchmarckDotNet.Benchmarks.Strore;
 using XorShift.BenchmarckDotNet.Configs;
-using XorShift.Intrinsics;
-using XorShift.Intrinsics.Store.Sse;
 
 namespace XorShift.BenchmarckDotNet
 {
