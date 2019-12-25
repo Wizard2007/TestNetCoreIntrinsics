@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class TestXorshiftUnrolled64IntrinsicsUnroled : Xorshift
+    public sealed class TestXorshiftUnrolled64IntrinsicsUnroled : Xorshift
     {
         private new ulong _x = 123456789;
         private new ulong _y = 362436069;

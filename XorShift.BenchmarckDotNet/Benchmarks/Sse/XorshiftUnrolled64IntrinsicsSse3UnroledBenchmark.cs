@@ -1,4 +1,3 @@
-
 using BenchmarkDotNet.Attributes;
 using XorShift.BenchmarckDotNet.Configs;
 using XorShift.Intrinsics;

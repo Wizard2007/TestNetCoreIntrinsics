@@ -7,6 +7,7 @@ using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Toolchains.CsProj;
+using XorShift.BenchmarckDotNet.Benchmarks.Columns;
 
 namespace XorShift.BenchmarckDotNet.Configs
 {
@@ -21,12 +22,12 @@ namespace XorShift.BenchmarckDotNet.Configs
             Add(
                 Job.Default
                     .With(RunStrategy.Monitoring)
-                    .With(Jit.RyuJit)
+                    .With(Jit.LegacyJit)
                     .With(Platform.X64)
                     .With(CsProjCoreToolchain.NetCoreApp31)
-                    .WithIterationCount(10)
-                    .WithInvocationCount(1024*40)
-                    .WithUnrollFactor(32)
+                    .WithIterationCount(1)
+                    .WithInvocationCount(1024*64)
+                    .WithUnrollFactor(64)
                     .WithLaunchCount(1)
                     .WithWarmupCount(0)
             );
@@ -35,7 +36,8 @@ namespace XorShift.BenchmarckDotNet.Configs
                 StatisticColumn.Min,
                 StatisticColumn.Max,
                 StatisticColumn.Error,
-                StatisticColumn.StdDev);
+                StatisticColumn.StdDev,
+                new AvgGenerationSpeedColumn());
 
             Add(CsvExporter.Default);
             Add(CsvMeasurementsExporter.Default);

@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64IntrinsicsSse41Unroled : Xorshift
+    public sealed class XorshiftUnrolled64IntrinsicsSse3UnroledNoCopyStruct : Xorshift
     {
         #region Private fields
 
@@ -17,7 +17,7 @@ namespace XorShift.Intrinsics
 
         #endregion
 
-        public XorshiftUnrolled64IntrinsicsSse41Unroled()
+        public XorshiftUnrolled64IntrinsicsSse3UnroledNoCopyStruct()
         {
             xyzwArray[0] = xyzwArray[1] = _x;
             xyzwArray[2] = xyzwArray[3] = _y;
@@ -37,6 +37,17 @@ static void Main()
 }
 */
 
+        string VectroToString(Vector128<ulong> vector, int vectorSize) 
+        {
+            var line = string.Empty;
+
+            for(int i = 0; i < vectorSize; i++)
+            {
+                 line+=$"{Convert.ToString( vector.AsByte().GetElement(i), toBase : 2), 16}_".Replace(" ", "x");
+            }
+
+            return line;
+        }
         public override int FillBufferMultipleRequired => 64;
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)
@@ -47,11 +58,8 @@ static void Main()
                 var pY = pxyzwArray+2;
                 var pZ = pxyzwArray+4;
                 var pW = pxyzwArray+6;
-                var x = Sse41.LoadVector128(pX);
-                var y = Sse41.LoadVector128(pY);
-                var z = Sse41.LoadVector128(pZ);
-                var w = Sse41.LoadVector128(pW);
 
+                //Buffer.BlockCopy(xyzwArray, 0, buf, 0, 64);
                 fixed (byte* pbytes = buf)
                 {
                     var pbuf = (ulong*) (pbytes + offset);
@@ -59,77 +67,81 @@ static void Main()
 
                     while (pbuf < pend)
                     {
-                        //VectroToString(x, 16);
+                        var x = Sse3.LoadVector128(pX);
+                        var y = Sse3.LoadVector128(pY);
+                        var z = Sse3.LoadVector128(pZ);
+                        var w = Sse3.LoadVector128(pW); 
+
                         // 1 -----------------------------------------------------------------------
                         //ulong tx = x ^ (x << 11);
-                        var tx = Sse41.Xor(x, Sse41.ShiftLeftLogical(x, 11));
+                        var tx = Sse3.Xor(x, Sse3.ShiftLeftLogical(x, 11));
 
                         //*(pbuf++) = x = w ^ (w >> 19) ^ (tx ^ (tx >> 8));
-                        var ttx =  Sse41.Xor(tx, Sse41.ShiftRightLogical(tx, 8));
+                        var ttx =  Sse3.Xor(tx, Sse3.ShiftRightLogical(tx, 8));
 
-                        x = Sse41.Xor(
-                                Sse41.Xor(w, ttx),
-                                Sse41.ShiftRightLogical(w, 19)
+                        x = Sse3.Xor(
+                                Sse3.Xor(w, ttx),
+                                Sse3.ShiftRightLogical(w, 19)
                             );
 
                         // save results
-                        Sse41.Store(pbuf, x);
+                        Sse3.Store(pbuf, x);
                         pbuf += 2;
 
                         // 2 -----------------------------------------------------------------------
 
                         //ulong ty = y ^ (y << 11);
-                        var ty = Sse41.Xor(y, Sse41.ShiftLeftLogical(y, 11));
+                        var ty = Sse3.Xor(y, Sse3.ShiftLeftLogical(y, 11));
 
                         //*(pbuf++) = y = x ^ (x >> 19) ^ (ty ^ (ty >> 8));
-                        var tty =  Sse41.Xor(ty, Sse41.ShiftRightLogical(ty, 8));
+                        var tty =  Sse3.Xor(ty, Sse3.ShiftRightLogical(ty, 8));
 
-                        y = Sse41.Xor(
-                                Sse41.Xor(x, tty),
-                                Sse41.ShiftRightLogical(x, 19)
+                        y = Sse3.Xor(
+                                Sse3.Xor(x, tty),
+                                Sse3.ShiftRightLogical(x, 19)
                             );
                             
                         // save results
-                        Sse41.Store(pbuf, y);
+                        Sse3.Store(pbuf, y);
                         pbuf += 2;
 
                         // 3 -----------------------------------------------------------------------
                         //ulong tz = z ^ (z << 11);
-                        var tz = Sse41.Xor(z, Sse41.ShiftLeftLogical(z, 11));
+                        var tz = Sse3.Xor(z, Sse3.ShiftLeftLogical(z, 11));
 
                         //*(pbuf++) = z = y ^ (y >> 19) ^ (tz ^ (tz >> 8));
-                        var ttz =  Sse41.Xor(tz, Sse41.ShiftRightLogical(tz, 8));
+                        var ttz =  Sse3.Xor(tz, Sse3.ShiftRightLogical(tz, 8));
 
-                        z = Sse41.Xor(
-                                Sse41.Xor(y, ttz),
-                                Sse41.ShiftRightLogical(y, 19)
+                        z = Sse3.Xor(
+                                Sse3.Xor(y, ttz),
+                                Sse3.ShiftRightLogical(y, 19)
                             );
                             
                         // save results
-                        Sse41.Store(pbuf, z);
+                        Sse3.Store(pbuf, z);
                         pbuf += 2;
 
                         // 4 -----------------------------------------------------------------------
                         //ulong tw = w ^ (w << 11);
-                        var tw = Sse41.Xor(w, Sse41.ShiftLeftLogical(w, 11));
+                        var tw = Sse3.Xor(w, Sse3.ShiftLeftLogical(w, 11));
 
                         //*(pbuf++) = w = z ^ (z >> 19) ^ (tw ^ (tw >> 8));
-                        var ttw =  Sse41.Xor(tw, Sse41.ShiftRightLogical(tw, 8));
+                        var ttw =  Sse3.Xor(tw, Sse3.ShiftRightLogical(tw, 8));
 
-                        w = Sse41.Xor(
-                                Sse41.Xor(z, ttw),
-                                Sse41.ShiftRightLogical(z, 19)
+                        w = Sse3.Xor(
+                                Sse3.Xor(z, ttw),
+                                Sse3.ShiftRightLogical(z, 19)
                             );
                             
                         // save results
-                        Sse41.Store(pbuf, w);
+                        Sse3.Store(pbuf, w);
                         pbuf += 2;
+
+                        Buffer.MemoryCopy(pbuf-8, pxyzwArray, 64, 64);
+
                     }
-                    
-                    Sse41.Store(pX, x);
-                    Sse41.Store(pY, y);
-                    Sse41.Store(pZ, z);
-                    Sse41.Store(pW, w);
+
+                    //Buffer.BlockCopy(buf, buf.Length - 64, xyzwArray, 0, 64);
                 }
             }
         }

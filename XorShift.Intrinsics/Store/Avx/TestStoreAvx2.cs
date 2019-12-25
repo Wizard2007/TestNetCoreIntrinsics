@@ -3,7 +3,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class TestStoreAvx : Xorshift
+    public sealed class TestStoreAvx2 : Xorshift
     {
         private new ulong _x = 123456789;
         private new ulong _y = 362436069;
@@ -38,7 +38,7 @@ namespace XorShift.Intrinsics
 
                 while (pbuf < pend)
                 {
-                    var  v = Avx.LoadVector256(vectorArray);
+                    var  v = Avx2.LoadVector256(vectorArray);
 
                     //var tXYXW = Avx2.Xor(v, Avx2.ShiftLeftLogical(v, 11));
 
@@ -46,7 +46,7 @@ namespace XorShift.Intrinsics
 
                     //Avx2.Store(tVectorArray, Avx2.Xor(tXYXW, tXYZWShifted));
                     //Avx2.Store(tVectorArray, v);
-                    Avx.Store(tVectorArray, v);
+                    Avx2.Store(tVectorArray, v);
 
                     //*(pbuf++) = *(pX) = *(pW) ^ (*(pW) >> 19) ^ *(pTX);
                     //*(pbuf++) = *(pY) = *(pX) ^ (*(pX) >> 19) ^ *(pTY);

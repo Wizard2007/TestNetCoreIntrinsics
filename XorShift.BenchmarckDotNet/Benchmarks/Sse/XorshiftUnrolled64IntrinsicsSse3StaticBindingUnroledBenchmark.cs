@@ -1,11 +1,11 @@
 using BenchmarkDotNet.Attributes;
 using XorShift.BenchmarckDotNet.Configs;
-using XorShift.Intrinsics.Store.Sse;
+using XorShift.Intrinsics;
 
 namespace XorShift.BenchmarckDotNet.Benchmarks
 {
     [Config(typeof(CommonXorshiftBenchmarkConfig))]
-    public class Sse3UnroledStoreStackAllocBenchmark : XorshiftCommonBenchmark<Sse3UnroledStoreStackAlloc>
+    public class XorshiftUnrolled64IntrinsicsSse3StaticBindingUnroledBenchmark : XorshiftCommonBenchmark<XorshiftUnrolled64IntrinsicsSse3StaticBindingUnroled>
     {
     }
 }

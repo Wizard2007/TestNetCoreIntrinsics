@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace XorShift.Intrinsics
 {
-    public class XorshiftUnrolled64IntrinsicsSse42Unroled : Xorshift
+    public sealed class XorshiftUnrolled64IntrinsicsSse42Unroled : Xorshift
     {
         #region Private fields
 
