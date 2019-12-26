@@ -22,7 +22,7 @@ namespace XorShift.BenchmarckDotNet.Configs
             Add(
                 Job.Default
                     .With(RunStrategy.Monitoring)
-                    .With(Jit.LegacyJit)
+                    .With(Jit.RyuJit)
                     .With(Platform.X64)
                     .With(CsProjCoreToolchain.NetCoreApp31)
                     .WithIterationCount(1)

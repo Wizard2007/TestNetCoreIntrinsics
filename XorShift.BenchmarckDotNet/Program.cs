@@ -13,7 +13,7 @@ namespace XorShift.BenchmarckDotNet
 
             BenchmarkRunner.Run(new[]{                 
                 //BenchmarkConverter.TypeToBenchmarks(typeof(StringTest), config),
-                BenchmarkConverter.TypeToBenchmarks(typeof(TestEmptyLoopBenchmark), config),
+                //BenchmarkConverter.TypeToBenchmarks(typeof(TestEmptyLoopBenchmark), config),
 
                 #region Standart XorShift
 
@@ -59,7 +59,6 @@ namespace XorShift.BenchmarckDotNet
                 BenchmarkConverter.TypeToBenchmarks(typeof(TestXorshiftUnrolled64IntrinsicsBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(TestXorshiftUnrolled64IntrinsicsUnroledBenchmark), config),
             });
-            
             BenchmarkRunner.Run(new[]{                 
                 BenchmarkConverter.TypeToBenchmarks(typeof(StringTest), config)
                 });

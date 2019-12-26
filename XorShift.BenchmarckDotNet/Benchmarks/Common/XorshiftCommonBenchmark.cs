@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using XorShift.Intrinsics;
 
 namespace XorShift.BenchmarckDotNet.Benchmarks
 {
@@ -28,7 +27,11 @@ namespace XorShift.BenchmarckDotNet.Benchmarks
             10*1024, 50*1024, 
             100*1024, 500*1024,
             1024*1024, 5*1024*1024,
-            10*1024*1024, 20*1024*1024
+            10*1024*1024, 20*1024*1024,
+            
+            1024, 2*1024, 4*1024, 8*1024, 16*1024, 32*1024, 64*1024, 128*1024, 256*1024, 512*1024, 
+            1024*1024, 2*1024*1024, 4*1024*1024, 8*1024*1024, 16*1024*1024, 32*1024*1024/*, 64*1024*1024,
+            128*1024*1024, 256*1024*1024, 512*1024*1024*/
         };
 
         #region Benchmarks
