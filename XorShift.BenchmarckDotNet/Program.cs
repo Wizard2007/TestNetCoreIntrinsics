@@ -10,10 +10,14 @@ namespace XorShift.BenchmarckDotNet
         static void Main(string[] args)
         {
             var config = CommonXorshiftBenchmarkConfig.Create(DefaultConfig.Instance);
-
+            BenchmarkRunner.Run(new[]{
+                
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentBenchmark), config),
+                //BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentWithOutLocalVarBenchmark), config),
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledBenchmark), config)
+            });
+/*
             BenchmarkRunner.Run(new[]{                 
-                //BenchmarkConverter.TypeToBenchmarks(typeof(StringTest), config),
-                //BenchmarkConverter.TypeToBenchmarks(typeof(TestEmptyLoopBenchmark), config),
 
                 #region Standart XorShift
 
@@ -61,7 +65,8 @@ namespace XorShift.BenchmarckDotNet
             });
             BenchmarkRunner.Run(new[]{                 
                 BenchmarkConverter.TypeToBenchmarks(typeof(StringTest), config)
-                });
+            });
+            */
         }
     }
 }

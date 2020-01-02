@@ -11,6 +11,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XorShift.Intrinsics\XorShift.Intrinsics.csproj" />
+    
   </ItemGroup>
-
+<PropertyGroup>
+  <DebugType>pdbonly</DebugType>
+  <DebugSymbol>true</DebugSymbol>
+</PropertyGroup>
 </Project>

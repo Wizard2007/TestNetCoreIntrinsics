@@ -25,14 +25,14 @@ namespace XorShift.BenchmarckDotNet.Configs
                     .With(Jit.RyuJit)
                     .With(Platform.X64)
                     .With(CsProjCoreToolchain.NetCoreApp31)
-                    .WithIterationCount(1)
-                    .WithInvocationCount(1024*64)
+                    .WithIterationCount(10)
+                    .WithInvocationCount(8*64)
                     .WithUnrollFactor(64)
                     .WithLaunchCount(1)
-                    .WithWarmupCount(0)
+                    .WithWarmupCount(1)
             );
 
-            Add(StatisticColumn.Mean,
+            Add(//StatisticColumn.Mean,
                 StatisticColumn.Min,
                 StatisticColumn.Max,
                 StatisticColumn.Error,
