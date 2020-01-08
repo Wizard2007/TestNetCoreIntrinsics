@@ -41,7 +41,7 @@ namespace XorShift.BenchmarckDotNet.Benchmarks.Columns
                 return "N/A";
             }
 
-            return Math.Round(1000000000d *(int)n.Value/(1024*1024* report.ResultStatistics.Mean), 2).ToString("#,#.00#", CultureInfo.InvariantCulture);
+            return Math.Round(1000000000d *(int)(n?.Value ?? 0) /(1024*1024* report?.ResultStatistics?.Mean ?? 1), 2).ToString("#,#.00#", CultureInfo.InvariantCulture);
         }
 
         public override string ToString() => ColumnName;

@@ -39,7 +39,7 @@ namespace XorShift.Intrinsics
                 var y = new Vector<ulong>(xyzwArray, 4);
                 var z = new Vector<ulong>(xyzwArray, 8);
                 var w = new Vector<ulong>(xyzwArray, 12);
-
+/*
                 fixed (byte* pbytes = buf)
                 {
                     var pbuf = (ulong*) (pbytes + offset);
@@ -120,6 +120,7 @@ namespace XorShift.Intrinsics
                     Avx2.Store(pZ, z);
                     Avx2.Store(pW, w);
                 }
+            */
             }
         }
     }
