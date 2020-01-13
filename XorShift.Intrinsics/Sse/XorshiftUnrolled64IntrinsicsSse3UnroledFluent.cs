@@ -25,17 +25,6 @@ namespace XorShift.Intrinsics
             xyzwArray[6] = xyzwArray[7] = _w;            
         }
 
-/*
-delegate string StringToString (string s);
-static void Main()
-{
-    MethodInfo trimMethod = typeof (string).GetMethod ("Trim", new Type[0]);
-    var trim = (StringToString) Delegate.CreateDelegate(typeof (StringToString), trimMethod);
-
-    for (int i = 0; i < 1000000; i++)
-        trim ("test");
-}
-*/
         public override int FillBufferMultipleRequired => 64;
 
         protected unsafe override void FillBuffer(byte[] buf, int offset, int offsetEnd)

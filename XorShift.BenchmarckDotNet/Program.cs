@@ -13,13 +13,12 @@ namespace XorShift.BenchmarckDotNet
             var config = CommonXorshiftBenchmarkConfig.Create(DefaultConfig.Instance);
             /*
             BenchmarkRunner.Run(new[]{
-                
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentBenchmark), config),
-                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentWithOutLocalVarBenchmark), config),
-                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledBenchmark), config)
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentWithOutLocalVarBenchmark), config)              
             })
-            */;
-
+            ;
+*/
             BenchmarkRunner.Run(new[]{                 
 
                 #region Standart XorShift
@@ -49,6 +48,8 @@ namespace XorShift.BenchmarckDotNet
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse2UnroledBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3StaticBindingUnroledBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledBenchmark), config),
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentBenchmark), config),
+                BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledFluentWithOutLocalVarBenchmark), config),         
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse41UnroledBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse42UnroledBenchmark), config),
                 BenchmarkConverter.TypeToBenchmarks(typeof(XorshiftUnrolled64IntrinsicsSse3UnroledNoCopyStructBenchmark), config)
@@ -56,6 +57,8 @@ namespace XorShift.BenchmarckDotNet
                 #endregion
                 
                 });
+
+                
 /*
             BenchmarkRunner.Run(new[]{ 
                 BenchmarkConverter.TypeToBenchmarks(typeof(Sse3UnroledStoreGlobalArrayBenchmark), config),
