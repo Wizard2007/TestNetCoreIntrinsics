@@ -61,7 +61,7 @@ namespace XorShift.Intrinsics
                         // save results
                         
                         Sse3.Store(pbuf, x);
-                        pbuf = (ulong*)((byte*)pbuf+2*8);
+                        pbuf = (ulong*)((byte*)pbuf+2*sizeof(ulong));
 
                         // 2 -----------------------------------------------------------------------
                         
@@ -78,7 +78,7 @@ namespace XorShift.Intrinsics
                         // save results
                         
                         Sse3.Store(pbuf, y);
-                        pbuf = (ulong*)((byte*)pbuf+2*8);
+                        pbuf = (ulong*)((byte*)pbuf+2*sizeof(ulong));
                         
                         // 3 -----------------------------------------------------------------------
                         //ulong tz = z ^ (z << 11);
@@ -94,7 +94,7 @@ namespace XorShift.Intrinsics
                         // save results
                         
                         Sse3.Store(pbuf, z);
-                        pbuf = (ulong*)((byte*)pbuf+2*8);
+                        pbuf = (ulong*)((byte*)pbuf+2*sizeof(ulong));
                         
                         // 4 -----------------------------------------------------------------------
                         //ulong tw = w ^ (w << 11);
@@ -110,7 +110,7 @@ namespace XorShift.Intrinsics
                         // save results
                         
                         Sse3.Store(pbuf, w);
-                        pbuf = (ulong*)((byte*)pbuf+2*8);
+                        pbuf = (ulong*)((byte*)pbuf+2*sizeof(ulong));
                     }
                     
                     Sse3.Store(pX, x);
