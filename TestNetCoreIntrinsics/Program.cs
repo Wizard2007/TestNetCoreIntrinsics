@@ -9,6 +9,53 @@ namespace TestNetCoreIntrinsics
     {
         unsafe static void Main(string[] args)
         {
+            //---------------------------------------
+            var n = 32;
+            var doubleArray = stackalloc double[n]; 
+            
+            for(var i = 0; i < n ; i++)
+            {
+                doubleArray[i] = i;
+            }
+
+            var current = doubleArray;
+            for(var i = 0; i < n; i+=4)
+            {
+                var v = Avx.LoadAlignedVector256(current);
+                Avx.StoreAligned(current, v);
+                current+=4;
+            }
+
+            //---------------------
+            var broadcastScalar = stackalloc double[8] {1d, 2, 3, 4,5,6,7,8};            
+            var broadcastScalarToVector = Avx.BroadcastScalarToVector256(broadcastScalar);
+
+            //---------------------
+            Vector256<double> HorizontalAdd1 = Vector256.Create(1d,2d,3d,4d);
+            Vector256<double> HorizontalAdd2 = Vector256.Create(10d,20d,30d,40d);
+
+            var h3 = Avx.HorizontalAdd(HorizontalAdd1, HorizontalAdd2);
+
+            //---------------------------
+            Vector256<ulong> firstV256L = Vector256.Create(1ul,2ul,3ul,4ul);
+            Vector256<ulong> secondV256L = Vector256.Create(10ul,20ul, 30ul, 40ul);
+
+            firstV256L = Avx.Add(firstV256L.AsDouble(), secondV256L.AsDouble()).AsUInt64();
+
+            //------------------------------------
+            Vector256<double> firstV256 = Vector256.Create(1d,2d,3d,4d);
+            Vector256<double> secondV256 = Vector256.Create(10d,20d,30d,40d);
+
+            firstV256 = Avx2.Add(firstV256, secondV256);
+            
+            var sum = Avx2.Add(firstV256, secondV256);
+            var x = sum.GetElement(0);
+            var y = sum.GetElement(1);
+            var z = sum.GetElement(2);
+            var w = sum.GetElement(3);
+
+
+            //-----------------------------------------
             CheckSuppertedIntrinsicsFeature();
 
             Console.WriteLine(string.Empty);
@@ -22,6 +69,9 @@ namespace TestNetCoreIntrinsics
 
         private static unsafe void CheckSuppertedIntrinsicsFeature()
         {
+            Console.WriteLine(Bmi1.IsSupported ? "Bmi1 supported" : "Bmi1 : not supported");
+            Console.WriteLine(Aes.IsSupported ? "Aes supported" : "Aes : not supported");
+            Console.WriteLine(Avx.IsSupported ? "Avx supported" : "Avx : not supported");
             Console.WriteLine(Avx2.IsSupported ? "Avx2 supported" : "Avx2 : not supported");
             Console.WriteLine(Sse.IsSupported ? "Sse supported" : "Sse : not supported");
             Console.WriteLine(Sse2.IsSupported ? "Sse2 supported" : "Sse2 : not supported");
